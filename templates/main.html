@@ -1,21 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <title>Document</title>
+    <meta name=""viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="{{url_for('static',filename='styles.css')}}">
 </head>
+
 <body>
     <div class="container">
- <h2>Main</h2>
-<form action="/paynow" method="post">
-<input type="submit" value="Transfer Money">
-</form>
-<form action="/" method="post">
-<input type="submit" value="Logout">
-</form>
-</div>
+        <h2>Main</h2>
+        <form action="/paynow" method="post">
+            <input type="submit" value="Transfer Money">
+        </form>
+        <form action="/deposit" method="post">
+            <input type="submit" value="Deposit Money">
+        </form>
+        <form action="/userlog" method="post">
+            <input type="submit" value="User Log">
+        </form>
+        <form action="/deleteuserlog" method="post">
+            <input type="submit" value="Delete User Log">
+        </form>
+        <form action="/" method="post">
+            <input type="submit" value="Logout">
+        </form>
+    </div>
 </body>
-</html>
-
