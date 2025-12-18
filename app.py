@@ -6,6 +6,23 @@ app = Flask(__name__)
 
 flag = 1
 
+def get_conn():
+    """Return a sqlite3 connection and ensure the `user` table exists."""
+    conn = sqlite3.connect("user.db")
+    c = conn.cursor()
+    c.execute(
+        """
+        CREATE TABLE IF NOT EXISTS user (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            timestamp TEXT
+        )
+        """
+    )
+    conn.commit()
+    c.close()
+    return conn
+
 @app.route("/",methods=["GET","POST"])
 def index():
     global flag
@@ -18,12 +35,12 @@ def main():
 
     if flag == 1:
         name = request.form.get("q")
-        timestamp = datetime.datetime.now()
-        conn = sqlite3.connect("user.db")
+        timestamp = datetime.datetime.now().isoformat()
+        conn = get_conn()
         c = conn.cursor()
-        c.execute("insert into user (name,timestamp) values(?,?)",(name,timestamp))
+        c.execute("insert into user (name,timestamp) values(?,?)", (name, timestamp))
         conn.commit()
-        c.close
+        c.close()
         conn.close()
         flag = 0
     return(render_template("main.html"))
@@ -39,25 +56,24 @@ def deposit():
 
 @app.route("/userlog",methods=["GET","POST"])
 def userlog():
-    conn = sqlite3.connect("user.db")
+    conn = get_conn()
     c = conn.cursor()
     c.execute("select * from user")
-    r = ""
-    for row in c:
-        r = r + str(row)
-    c.close
+    rows = c.fetchall()
+    r = "\n".join([str(row) for row in rows])
+    c.close()
     conn.close()
-    return(render_template("userlog.html",r=r))
+    return(render_template("userlog.html", r=r))
 
 @app.route("/deleteuserlog",methods=["GET","POST"])
 def deleteuserlog():
-    conn = sqlite3.connect("user.db")
+    conn = get_conn()
     c = conn.cursor()
     c.execute("delete from user")
     conn.commit()
-    c.close
+    c.close()
     conn.close()
     return(render_template("deleteuserlog.html"))
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host="0.0.0.0", port=8080, debug=True)
